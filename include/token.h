@@ -1,26 +1,65 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
-#define MAX_TOKENS 100
-#define MAX_TOKEN_SIZE 100
+#define MAX_TOKENS      128
+#define MAX_TOKEN_LEN    64
 
-// 1. Define the different token types
-typedef enum {
+/*
+ * Types of tokens
+ */
+typedef enum
+{
     TOKEN_WORD,
-    TOKEN_PIPE,
-    TOKEN_INPUT,
-    TOKEN_OUTPUT,
-    TOKEN_END
-} TokenType;
 
-// 2. Add the TokenType to your struct
+    TOKEN_PIPE,          // |
+
+    TOKEN_INPUT,         // <
+
+    TOKEN_OUTPUT,        // >
+
+    TOKEN_APPEND,        // >>
+
+    TOKEN_BACKGROUND,    // &
+
+    TOKEN_END
+
+} token_type_t;
+
+
+/*
+ * One token
+ */
 typedef struct
 {
-    TokenType type;
-    char value[MAX_TOKEN_SIZE];
-} Token;
+    token_type_t type;
 
-int tokenize(char *input, Token tokens[]);
-void print_tokens(Token tokens[], int count);
+    char text[MAX_TOKEN_LEN];
+
+} token_t;
+
+
+/*
+ * Complete token stream
+ */
+typedef struct
+{
+    token_t tokens[MAX_TOKENS];
+
+    int count;
+
+} token_list_t;
+
+
+/* Functions */
+
+void token_list_init(token_list_t *list);
+
+void token_add(token_list_t *list,
+               token_type_t type,
+               const char *text 
+               );
+
+void token_print(const token_list_t *list);
 
 #endif
+
